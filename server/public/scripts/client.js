@@ -1,75 +1,54 @@
-operations = [];
+let activeNumber = '';
+let operationToSend = {};
 
 $(document).ready(readyNow);
 
 function readyNow() {
     console.log('document ready');
     addEventHandlers();
-
 }//end readyNow
 
 function addEventHandlers () {
 
-$('#addButton').on('click', addButtonOnClick);
-$('#subtractButton').on('click', subtractButtonOnClick);
-$('#multiplyButton').on('click', multiplyButtonOnClick);
-$('#divideButton').on('click', divideButtonOnClick);
-$('#clearButton').on('click', clearButtonOnClick);
+    $('#calculatorDiv').on('click', '.numberButton', numberButtonOnClick);
+    $('#calculatorDiv').on('click', '.operatorButton', operatorButtonOnClick);
+    $('#equalsButton').on('click', sendOperationToServer);
+    $('#acButton').on('click', acButtonOnClick);
+    $('#clearButton').on('click', clearHistoryButtonOnClick);
+}//end addEventHandlers
 
-}
+function numberButtonOnClick (){
+    $('#result').val('');
+    activeNumber += $(this).val();
+    console.log(activeNumber);
+}// end numberButtonOnClick
 
-{/* <input type ="number" placeholder="Input Number 1" id="inputNumber1">
-<input type ="number" placeholder="Input Number 2" id="inputNumber2"> */}
+function operatorButtonOnClick () {
+    operationToSend.number1 = activeNumber;
+    activeNumber = '';
+    if ($(this).val() === 'add') {
+        operationToSend.operation = 'add';
+    }
+    else if ($(this).val() === 'subtract') {
+        operationToSend.operation = 'subtract';
+    }
+    else if ($(this).val() === 'multiply') {
+        operationToSend.operation = 'multiply';
+    }
+    else {
+        operationToSend.operation = 'divide';
+    }
+}//end operatorOnClick
 
-function addButtonOnClick () {
-    let inputNumber1 = $("#inputNumber1").val();
-    $("#inputNumber1").val('');
-    let inputNumber2 = $("#inputNumber2").val();
-    $("#inputNumber2").val('');
-    let operationToAdd = {number1: inputNumber1, number2: inputNumber2,};
-    operationToAdd.operation = 'add';
-    sendOperationToServer (operationToAdd);
-
-}
-
-function subtractButtonOnClick () {
-    let inputNumber1 = $("#inputNumber1").val();
-    $("#inputNumber1").val('');
-    let inputNumber2 = $("#inputNumber2").val();
-    $("#inputNumber2").val('');
-    let operationToAdd = {number1: inputNumber1, number2: inputNumber2,};
-    operationToAdd.operation = 'subtract';
-    sendOperationToServer (operationToAdd);
-}
-
-function multiplyButtonOnClick () {
-    let inputNumber1 = $("#inputNumber1").val();
-    $("#inputNumber1").val('');
-    let inputNumber2 = $("#inputNumber2").val();
-    $("#inputNumber2").val('');
-    let operationToAdd = {number1: inputNumber1, number2: inputNumber2,};
-    operationToAdd.operation = 'multiply';
-    sendOperationToServer (operationToAdd);
-}
-
-function divideButtonOnClick () {
-    let inputNumber1 = $("#inputNumber1").val();
-    $("#inputNumber1").val('');
-    let inputNumber2 = $("#inputNumber2").val();
-    $("#inputNumber2").val('');
-    let operationToAdd = {number1: inputNumber1, number2: inputNumber2,};
-    operationToAdd.operation = 'divide';
-    sendOperationToServer (operationToAdd);
-}
-
-function sendOperationToServer (operationObject) {
-    operationToSend = operationObject;
+function sendOperationToServer () {
+    operationToSend.number2 = activeNumber;
+    activeNumber = '';
     $.ajax({
         type: 'POST',
         data: operationToSend,
         url: '/operation'
     }).done(function(response) {
-        //our response from a post will just be '200' success.
+        operationToSend = {};
         receiveOperationFromServer ();
         console.log('SUCCESS!');
     }).fail(function(response) {
@@ -77,15 +56,29 @@ function sendOperationToServer (operationObject) {
     })//end ajax post
 }//end sendOperationToServer
 
+function acButtonOnClick () {
+    $('#result').val('');
+    activeNumber = '';
+}//end acButtonOnClick
+
+function clearHistoryButtonOnClick () {
+    $.ajax({
+        type: 'DELETE',
+        url: '/clearHistory'
+    }).done(function(response) {
+        $('#history').empty();
+        $('#result').val('');
+    }).fail(function(response) {
+        alert('Something went wrong...');
+    })//end ajax delete
+}//end clearButtonOnClick
 
 function receiveOperationFromServer () {
     $.ajax({
         type: 'GET',
         url: '/operation'
     }).done(function(response){
-        $('#result').empty();
-        $('#result').append( 'Result: ' + 
-                            response[response.length-1].operationResult);
+        $('#result').val( response[response.length-1].operationResult);
         let responseToAppend = response;
          operationsHistoryAppend (responseToAppend);
     })//end ajax get
@@ -113,20 +106,3 @@ function receiveOperationFromServer () {
             }
     }//end for let
 }//end operationsHistoryAppend
-
-function clearButtonOnClick () {
-    $.ajax({
-        type: 'POST',
-        data: 'clear',
-        url: '/clearHistory'
-    }).done(function(response) {
-        //our response from a post will just be '200' success.
-        $('#history').empty();
-        $("#inputNumber1").val('');
-        $("#inputNumber2").val('');
-        $('#result').empty();
-        $('#result').append( 'Result: ');
-    }).fail(function(response) {
-        alert('Something went wrong...');
-    })//end ajax post
-}//end clearButtonOnClick

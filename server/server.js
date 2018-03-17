@@ -20,7 +20,7 @@ app.post('/operation', (req, res) => {
     res.sendStatus(200);
 });
 
-app.post('/clearHistory', (req, res) => {
+app.delete('/clearHistory', (req, res) => {
     operations = [];
     res.sendStatus(200);
 });

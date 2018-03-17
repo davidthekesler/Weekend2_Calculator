@@ -6,19 +6,41 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="vendors/jquery-3.3.1.js"></script>
     <script src="scripts/client.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles/styles.css">
     <title>Calculator</title>
 </head>
 <body>
     <h1>Calculator</h1>
-    <input type ="number" placeholder="Input Number 1" id="inputNumber1">
-    <input type ="number" placeholder="Input Number 2" id="inputNumber2">
-    <button id ="addButton">Add</button>
-    <button id ="subtractButton">Subtract</button>
-    <button id ="multiplyButton">Multiply</button>
-    <button id ="divideButton">Divide</button>
-    <div id="result">Result: </div>
-    <div></div><button id ="clearButton">Clear History</button></div>
-    <div>History:</div>
+    <div id="calculatorDiv">
+        <div id="123">
+            <button class ="numberButton" value="1">1</button>
+            <button class ="numberButton" value="2">2</button>
+            <button class ="numberButton" value="3">3</button>
+            <button class ="operatorButton" value='add'>+</button>
+        </div>
+        <div id="456">
+            <button class ="numberButton" value="4">4</button>
+            <button class ="numberButton" value="5">5</button>
+            <button class ="numberButton" value="6">6</button>
+            <button class ="operatorButton" value='subtract'>-</button>
+        </div>
+        <div id="789">
+            <button class ="numberButton" value="7">7</button>
+            <button class ="numberButton" value="8">8</button>
+            <button class ="numberButton" value="9">9</button>
+            <button class ="operatorButton" value='multiply'>*</button>
+        </div>
+        <div id"0">
+            <button id = "zeroButton" class ="numberButton" value="0">0</button>
+            <button class ="operatorButton" value='divide'>/</button>
+            <button class ="equalsAndClearButton" id="equalsButton" value='equals'>=</button> 
+        </div>
+        <div id="=">
+        <input type ="text" id="result">
+            <button class ="equalsAndClearButton" id ="acButton" value='AC'>AC</button> 
+        </div>
+    </div>
+    <div><button id ="clearButton">Clear Calculator and History</button></div>
     <ul id="history"></ul>
 </body>
 </html>
